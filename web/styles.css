@@ -1,0 +1,63 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+}
+
+.container {
+    display: flex;
+    gap: 60px;
+    align-items: flex-start;
+}
+
+#layout-container {
+    padding: 10px;
+    background: #f9f9f9;
+    border-radius: 6px;
+}
+
+#metrics-container {
+    padding: 15px;
+    background: #f3f3f3;
+    border-radius: 6px;
+}
+
+#floorplan {
+    border: 1px solid black;
+}
+
+
+
+.room {
+    stroke: black;
+    stroke-width: 1;
+    fill-opacity: 0.7;
+    transition: stroke-width 0.15s ease;
+}
+
+.common {
+    fill: #4CAF50;
+}
+
+.private {
+    fill: #2196F3;
+}
+
+.legend {
+    margin-bottom: 15px;
+}
+
+.legend-item {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    margin-right: 5px;
+    vertical-align: middle;
+}
+
+.common-box {
+    background-color: #4CAF50;
+}
+
+.private-box {
+    background-color: #2196F3;
+}
