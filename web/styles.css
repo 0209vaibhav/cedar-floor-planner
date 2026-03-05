@@ -4,7 +4,7 @@ html, body {
 }
 
 body {
-    font-family: "Inter", Arial, sans-serif;
+    font-family: "Inter", sans-serif;
     background: #ffffff;
     color: #222;
     box-sizing: border-box;
@@ -54,7 +54,7 @@ body {
     overflow:auto;
 
     background-color: #ffffff;
-    border: 2px solid rgb(244, 244, 244);
+    border: 1px solid rgb(200, 200, 200);
 
     scroll-behavior: smooth;
 }
@@ -72,7 +72,7 @@ body {
     border-radius: 0px;
 
     background-color: #ffffff;
-    border: 2px solid rgb(244, 244, 244);
+    border: 1px solid rgb(200, 200, 200);
     padding: 20px;
 }
 
@@ -81,8 +81,6 @@ body {
     flex-direction: column;
     height: 100%;
 }
-
-
 
 .card:last-child{
     flex: 1;

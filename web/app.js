@@ -1,13 +1,30 @@
 async function loadLayout() {
 
-    const response = await fetch("../exports/layout.json");
-    const data = await response.json();
+    let data;
+
+    try {
+
+        const response = await fetch("../exports/layout.json");
+
+        if (!response.ok) {
+            throw new Error("Live layout not available");
+        }
+
+        data = await response.json();
+
+    } catch (error) {
+
+        console.log("Loading demo layout...");
+
+        const response = await fetch("demo_layout.json");
+        data = await response.json();
+
+    }
 
     renderLayout(data);
     renderMetrics(data);
 
 }
-
 
 function renderLayout(data) {
 
