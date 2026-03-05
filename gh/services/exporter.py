@@ -61,6 +61,12 @@ def export_layout(layout, export_path):
             "packing_efficiency": layout.packing_efficiency(),
             "private_ratio": layout.private_area() / layout.net_floor_area() if layout.net_floor_area() else 0,
             "common_ratio": layout.common_area() / layout.net_floor_area() if layout.net_floor_area() else 0
+        },
+        "solver": {
+            "selected_profile": getattr(layout, "selected_profile", "unknown"),
+            "rotation": getattr(layout, "selected_rotation", False),
+            "sort_strategy": getattr(layout, "selected_sort", "unknown"),
+            "variants_tested": getattr(layout, "variants_tested", 1)
         }
     }
 

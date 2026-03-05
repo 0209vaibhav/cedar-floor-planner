@@ -3,7 +3,7 @@ async function loadLayout() {
     const data = await response.json();
 
     renderLayout(data);
-    renderMetrics(data.metrics);
+    renderMetrics(data);
 }
 
 function renderLayout(data) {
@@ -71,7 +71,10 @@ function renderLayout(data) {
     });
 }
 
-function renderMetrics(metrics) {
+function renderMetrics(data) {
+    const metrics = data.metrics;
+    const solver = data.solver;
+
     const container = document.getElementById("metrics");
 
     container.innerHTML = `
@@ -82,7 +85,15 @@ function renderMetrics(metrics) {
         <p><strong>Packing Efficiency:</strong> ${(metrics.packing_efficiency * 100).toFixed(2)}%</p>
         <p><strong>Private Ratio:</strong> ${(metrics.private_ratio * 100).toFixed(2)}%</p>
         <p><strong>Common Ratio:</strong> ${(metrics.common_ratio * 100).toFixed(2)}%</p>
+
+        <hr>
+
+        <h3>Solver Decision</h3>
+
+        <p><strong>Program Profile:</strong> ${solver.selected_profile}</p>
+        <p><strong>Rotation Allowed:</strong> ${solver.rotation}</p>
+        <p><strong>Sort Strategy:</strong> ${solver.sort_strategy}</p>
+        <p><strong>Variants Evaluated:</strong> ${solver.variants_tested}</p>
     `;
 }
-
 loadLayout();
