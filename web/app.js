@@ -155,6 +155,53 @@ function setupCanvasInteractions() {
 
 }
 
+function setupLegendInteractions() {
+
+    const rows = document.querySelectorAll(".legend-row[data-category]");
+
+    function clearLegendHighlight() {
+
+        document.querySelectorAll(".room").forEach(room => {
+
+            room.classList.remove("dimmed");
+            room.classList.remove("highlighted");
+
+        });
+
+    }
+
+    rows.forEach(row => {
+
+        const category = row.dataset.category;
+
+        row.addEventListener("mouseenter", () => {
+
+            const rooms = document.querySelectorAll(".room");
+
+            rooms.forEach(room => {
+
+                if (room.classList.contains(category)) {
+                    room.classList.add("highlighted");
+                    room.classList.remove("dimmed");
+                } else {
+                    room.classList.add("dimmed");
+                    room.classList.remove("highlighted");
+                }
+
+            });
+
+        });
+
+        row.addEventListener("mouseleave", () => {
+
+            clearLegendHighlight();
+
+        });
+
+    });
+
+}
+
 async function loadLayout() {
 
     let data;
@@ -246,9 +293,7 @@ function renderLayout(data) {
         rect.classList.add(room.category);
 
         rect.addEventListener("mouseover", (event) => {
-        
-            rect.style.strokeWidth = 4;
-        
+
             showTooltip(`
                 <strong>${room.name}</strong>
                 <hr>
@@ -264,9 +309,7 @@ function renderLayout(data) {
         rect.addEventListener("mousemove", moveTooltip);
         
         rect.addEventListener("mouseout", () => {
-        
-            rect.style.strokeWidth = 1;
-        
+
             hideTooltip();
         
         });
@@ -368,6 +411,18 @@ function renderMetrics(data) {
         </span>
     : ${metrics.net_floor_area.toFixed(2)} m²
     </p>
+
+    <p>
+    <strong>Common Area</strong>
+        <span class="info-icon"
+        data-tooltip="
+        <strong>Formula</strong><br>
+        Sum of room areas where category = common.
+        ">
+        ℹ
+        </span>
+    : ${metrics.common_area.toFixed(2)} m²
+    </p>
     
     <p>
     <strong>Private Area</strong>
@@ -379,18 +434,6 @@ function renderMetrics(data) {
         ℹ
         </span>
     : ${metrics.private_area.toFixed(2)} m²
-    </p>
-    
-    <p>
-    <strong>Common Area</strong>
-        <span class="info-icon"
-        data-tooltip="
-        <strong>Formula</strong><br>
-        Sum of room areas where category = common.
-        ">
-        ℹ
-        </span>
-    : ${metrics.common_area.toFixed(2)} m²
     </p>
     
     <p>
@@ -408,18 +451,6 @@ function renderMetrics(data) {
     </p>
     
     <p>
-    <strong>Private Ratio</strong>
-        <span class="info-icon"
-        data-tooltip="
-        <strong>Formula</strong><br>
-        Private Area ÷ Net Floor Area
-        ">
-        ℹ
-        </span>
-    : ${(metrics.private_ratio * 100).toFixed(2)} %
-    </p>
-    
-    <p>
     <strong>Common Ratio</strong>
         <span class="info-icon"
         data-tooltip="
@@ -430,7 +461,19 @@ function renderMetrics(data) {
         </span>
     : ${(metrics.common_ratio * 100).toFixed(2)} %
     </p>
-    
+
+    <p>
+    <strong>Private Ratio</strong>
+        <span class="info-icon"
+        data-tooltip="
+        <strong>Formula</strong><br>
+        Private Area ÷ Net Floor Area
+        ">
+        ℹ
+        </span>
+    : ${(metrics.private_ratio * 100).toFixed(2)} %
+    </p>
+       
 
     <br>
     <br>
@@ -465,4 +508,5 @@ function renderMetrics(data) {
 }
 
 setupCanvasInteractions();
+setupLegendInteractions();
 loadLayout();
