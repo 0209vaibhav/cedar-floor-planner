@@ -4,27 +4,47 @@
     <meta charset="UTF-8">
     <title>Floor Planner Dashboard</title>
     <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
 
-    <h1>Floor Plan Layout</h1>
+    <h1 class="title">Cedar Floor Planner</h1>
+    
+    <div class="dashboard">
 
-    <div class="container">
-        <div id="layout-container">
+        <div class="side-panel">
+    
+            <div class="card">
+                <h3>Legend</h3>
+                <hr>
+    
+                <div class="legend-row">
+                    <span class="legend-box common-box"></span>
+                    <span>Common Spaces</span>
+                </div>
+    
+                <div class="legend-row">
+                    <span class="legend-box private-box"></span>
+                    <span>Private Spaces</span>
+                </div>
+    
+            </div>
+    
+            <div class="card">
+                <div id="metrics"></div>
+            </div>
+    
+        </div>
+    
+        <div class="canvas-panel">
             <svg id="floorplan"></svg>
         </div>
-
-        <div class="legend">
-            <span class="legend-item common-box"></span> Common
-            <span class="legend-item private-box"></span> Private
-        </div>
-
-        <div id="metrics-container">
-            <h2>Metrics</h2>
-            <div id="metrics"></div>
-        </div>
+    
     </div>
-
+    
     <script src="app.js"></script>
-</body>
+
+    <div id="tooltip"></div>
+    
+    </body>
 </html>
