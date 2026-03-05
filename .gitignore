@@ -1,3 +1,15 @@
+# Python
 __pycache__/
+*.pyc
+
+# Virtual env
 venv/
-*.3dm
+
+# Exported output
+exports/layout.json
+
+# OS
+.DS_Store
+
+# Rhino temp
+*.3dm.autosave
