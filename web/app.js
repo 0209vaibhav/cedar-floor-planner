@@ -1,4 +1,14 @@
 const tooltip = document.getElementById("tooltip");
+const svgElement = document.getElementById("floorplan");
+
+let viewScale = 1;
+let viewTranslateX = 0;
+let viewTranslateY = 0;
+let isPanning = false;
+let panStartX = 0;
+let panStartY = 0;
+let panOriginX = 0;
+let panOriginY = 0;
 
 function showTooltip(html, event) {
 
@@ -19,6 +29,129 @@ function moveTooltip(event) {
 function hideTooltip() {
 
     tooltip.style.opacity = 0;
+
+}
+
+function applyViewTransform() {
+
+    const group = document.getElementById("floorplan-group");
+
+    if (group) {
+        group.setAttribute(
+            "transform",
+            `translate(${viewTranslateX}, ${viewTranslateY}) scale(${viewScale})`
+        );
+    }
+
+}
+
+function resetView() {
+
+    viewScale = 1;
+    viewTranslateX = 0;
+    viewTranslateY = 0;
+    applyViewTransform();
+
+}
+
+function zoomBy(factor, event) {
+
+    const rect = svgElement.getBoundingClientRect();
+
+    // If we have an event, zoom around the cursor position.
+    // Otherwise, zoom around the center of the SVG.
+    const cx = event ? event.clientX - rect.left : rect.width / 2;
+    const cy = event ? event.clientY - rect.top : rect.height / 2;
+
+    const svgX = (cx - viewTranslateX) / viewScale;
+    const svgY = (cy - viewTranslateY) / viewScale;
+
+    const newScale = Math.min(4, Math.max(0.4, viewScale * factor));
+
+    viewTranslateX = cx - svgX * newScale;
+    viewTranslateY = cy - svgY * newScale;
+    viewScale = newScale;
+
+    applyViewTransform();
+
+}
+
+function setupCanvasInteractions() {
+
+    if (!svgElement) return;
+
+    // Buttons
+    document.getElementById("zoom-in").addEventListener("click", () => zoomBy(1.2));
+    document.getElementById("zoom-out").addEventListener("click", () => zoomBy(1 / 1.2));
+    document.getElementById("recenter").addEventListener("click", resetView);
+
+    // Mouse wheel zoom
+    svgElement.addEventListener("wheel", (event) => {
+
+        event.preventDefault();
+        const factor = event.deltaY < 0 ? 1.1 : 1 / 1.1;
+        zoomBy(factor, event);
+
+    }, { passive: false });
+
+    // Mouse drag pan
+    svgElement.addEventListener("mousedown", (event) => {
+
+        if (event.button !== 0) return;
+
+        isPanning = true;
+        panStartX = event.clientX;
+        panStartY = event.clientY;
+        panOriginX = viewTranslateX;
+        panOriginY = viewTranslateY;
+
+    });
+
+    window.addEventListener("mousemove", (event) => {
+
+        if (!isPanning) return;
+
+        const dx = event.clientX - panStartX;
+        const dy = event.clientY - panStartY;
+
+        viewTranslateX = panOriginX + dx;
+        viewTranslateY = panOriginY + dy;
+        applyViewTransform();
+
+    });
+
+    window.addEventListener("mouseup", () => {
+
+        isPanning = false;
+
+    });
+
+    // Keyboard controls
+    window.addEventListener("keydown", (event) => {
+
+        const step = 20;
+
+        if (event.key === "+" || event.key === "=") {
+            zoomBy(1.1);
+        } else if (event.key === "-") {
+            zoomBy(1 / 1.1);
+        } else if (event.key === "ArrowUp") {
+            viewTranslateY += step;
+            applyViewTransform();
+        } else if (event.key === "ArrowDown") {
+            viewTranslateY -= step;
+            applyViewTransform();
+        } else if (event.key === "ArrowLeft") {
+            viewTranslateX += step;
+            applyViewTransform();
+        } else if (event.key === "ArrowRight") {
+            viewTranslateX -= step;
+            applyViewTransform();
+        } else if (event.key === "0" || event.key.toLowerCase() === "r") {
+            resetView();
+        }
+
+    });
 
 }
 
@@ -75,6 +208,15 @@ function renderLayout(data) {
     const offsetX = (svgWidth - boundaryWidth * scale) / 2;
     const offsetY = (svgHeight - boundaryHeight * scale) / 2;
 
+    // Clear any existing group
+    const existingGroup = document.getElementById("floorplan-group");
+    if (existingGroup) {
+        svg.removeChild(existingGroup);
+    }
+
+    const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    group.setAttribute("id", "floorplan-group");
+
     // Draw boundary
     const boundaryRect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
 
@@ -87,7 +229,7 @@ function renderLayout(data) {
     boundaryRect.setAttribute("stroke", "black");
     boundaryRect.setAttribute("stroke-width", 2);
 
-    svg.appendChild(boundaryRect);
+    group.appendChild(boundaryRect);
 
     // Draw rooms
     data.rooms.forEach(room => {
@@ -129,7 +271,7 @@ function renderLayout(data) {
         
         });
 
-        svg.appendChild(rect);
+        group.appendChild(rect);
 
         // Room label
         const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
@@ -154,9 +296,12 @@ function renderLayout(data) {
 
         label.textContent = room.name;
 
-        svg.appendChild(label);
+        group.appendChild(label);
 
     });
+
+    svg.appendChild(group);
+    applyViewTransform();
 
 }
 
@@ -319,4 +464,5 @@ function renderMetrics(data) {
 
 }
 
+setupCanvasInteractions();
 loadLayout();
