@@ -307,8 +307,6 @@ function renderLayout(data) {
             `, event);
         
         });
-
-        
         
         rect.addEventListener("mousemove", moveTooltip);
         
